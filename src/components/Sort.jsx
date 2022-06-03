@@ -1,14 +1,20 @@
 import React from 'react';
 import shortId from 'shortid';
 
-export const Sort = () => {
+export const Sort = ({ value, onClickCategory }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [active, setActive] = React.useState(0);
 
-  const list = ['популярности', 'цене', 'алфавиту'];
+  const list = [
+    { title: 'популярности (DESC)', sortProperty: 'rating' },
+    { title: 'популярности (ASC)', sortProperty: '-rating' },
+    { title: 'цене (DESC)', sortProperty: 'price' },
+    { title: 'цене (ASC)', sortProperty: '-price' },
+    { title: 'алфавиту (DESC)', sortProperty: 'name' },
+    { title: 'алфавиту (ASC)', sortProperty: '-name' },
+  ];
 
-  const onItemClick = (index) => {
-    setActive(index);
+  const onItemClick = (i) => {
+    onClickCategory(i);
     setIsOpen(!isOpen);
   };
 
@@ -27,17 +33,19 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{list[active]}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{value.title}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
           <ul>
-            {list.map((item, index) => (
+            {list.map((obj) => (
               <li
                 key={shortId.generate()}
-                onClick={() => onItemClick(index)}
-                className={active === index ? 'active' : ''}>
-                {item}
+                onClick={() => onItemClick(obj)}
+                className={
+                  value.sortProperty === obj.sortProperty ? 'active' : ''
+                }>
+                {obj.title}
               </li>
             ))}
           </ul>
