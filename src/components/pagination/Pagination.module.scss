@@ -1,0 +1,26 @@
+@import "../../scss/variables";
+
+.paginate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+
+  li {
+    cursor: pointer;
+    margin: 8px;
+    padding: 8px;
+    border: 1px solid $gray-line;
+    border-radius: 5px;
+  }
+
+  :global {
+    .selected {
+      border: 1px solid $orange;
+      background: $orange;
+      a {
+        color: #fff;
+      }
+    }
+  }
+}

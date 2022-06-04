@@ -1,16 +1,19 @@
 import React from 'react';
 import axios from 'axios';
 import shortId from 'shortid';
+import Spline from '@splinetool/react-spline';
 
 import { Categories } from '../components/categories/Categories';
 import { Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
+import Pagination from '../components/pagination';
 
 export const Home = ({ searchValue }) => {
   const [pizzas, setPizzas] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [categoryId, setCategoryId] = React.useState(0);
+  const [currentPage, setCurrentPage] = React.useState(1);
   const [sortType, setSortType] = React.useState({
     title: 'популярности',
     sortProperty: 'rating',
@@ -26,12 +29,23 @@ export const Home = ({ searchValue }) => {
 
     axios
       .get(
-        `https://62966f97810c00c1cb75cbe3.mockapi.io/items?${category}&sortBy=${sortBy}&order=${order}${search}`,
+        `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
       )
       .then((res) => setPizzas(res.data));
     setIsLoading(false);
     window.scrollTo(0, 0);
-  }, [categoryId, sortType]);
+  }, [categoryId, sortType, searchValue, currentPage]);
+
+  // поиск без бекенда
+  // const piz = pizzas
+  //   .filter((obj) => {
+  //     if (obj.name.toLowerCase().includes(searchValue.toLowerCase())) {
+  //       return true;
+  //     }
+  //     return false;
+  //   })
+  //   .map((obj) => <PizzaBlock key={shortId.generate()} {...obj} />);
+
   return (
     <>
       <div className="content__top">
@@ -63,6 +77,12 @@ export const Home = ({ searchValue }) => {
             ))}
       </div>
       {/* </div> */}
+      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+
+      <Spline
+        scene="https://prod.spline.design/
+TRfTj83xgjIdHPmT/scene.spline"
+      />
     </>
   );
 };
