@@ -1,20 +1,26 @@
 import React from 'react';
 import shortId from 'shortid';
+import { useSelector, useDispatch } from 'react-redux';
 
-export const Sort = ({ value, onClickCategory }) => {
+import { setSort } from '../redux/slices/filterSlice';
+
+const list = [
+  { title: 'популярности (DESC)', sortProperty: 'rating' },
+  { title: 'популярности (ASC)', sortProperty: '-rating' },
+  { title: 'цене (DESC)', sortProperty: 'price' },
+  { title: 'цене (ASC)', sortProperty: '-price' },
+  { title: 'алфавиту (DESC)', sortProperty: 'name' },
+  { title: 'алфавиту (ASC)', sortProperty: '-name' },
+];
+
+export const Sort = () => {
+  const dispatch = useDispatch();
+  const sort = useSelector((state) => state.filter.sort);
+
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const list = [
-    { title: 'популярности (DESC)', sortProperty: 'rating' },
-    { title: 'популярности (ASC)', sortProperty: '-rating' },
-    { title: 'цене (DESC)', sortProperty: 'price' },
-    { title: 'цене (ASC)', sortProperty: '-price' },
-    { title: 'алфавиту (DESC)', sortProperty: 'name' },
-    { title: 'алфавиту (ASC)', sortProperty: '-name' },
-  ];
-
   const onItemClick = (i) => {
-    onClickCategory(i);
+    dispatch(setSort(i));
     setIsOpen(!isOpen);
   };
 
@@ -33,7 +39,7 @@ export const Sort = ({ value, onClickCategory }) => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{value.title}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{sort.title}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -43,7 +49,7 @@ export const Sort = ({ value, onClickCategory }) => {
                 key={shortId.generate()}
                 onClick={() => onItemClick(obj)}
                 className={
-                  value.sortProperty === obj.sortProperty ? 'active' : ''
+                  sort.sortProperty === obj.sortProperty ? 'active' : ''
                 }>
                 {obj.title}
               </li>
