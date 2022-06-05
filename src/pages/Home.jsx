@@ -1,15 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 import shortId from 'shortid';
-import Spline from '@splinetool/react-spline';
 
+import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
 import { Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
 
-export const Home = ({ searchValue }) => {
+export const Home = () => {
+  const { searchValue } = React.useContext(SearchContext);
   const [pizzas, setPizzas] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [categoryId, setCategoryId] = React.useState(0);
@@ -78,11 +79,6 @@ export const Home = ({ searchValue }) => {
       </div>
       {/* </div> */}
       <Pagination onChangePage={(number) => setCurrentPage(number)} />
-
-      <Spline
-        scene="https://prod.spline.design/
-TRfTj83xgjIdHPmT/scene.spline"
-      />
     </>
   );
 };
