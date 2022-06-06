@@ -1,42 +1,49 @@
 import React from 'react';
+import qs from 'qs';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import shortId from 'shortid';
 
-import { setCategoryId, setcurrentPage } from '../redux/slices/filterSlice';
+import {
+  setCategoryId,
+  setcurrentPage,
+  setFilters,
+} from '../redux/slices/filterSlice';
 import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
-import { Sort } from '../components/Sort';
+import { list, Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
 
 export const Home = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isSearch = React.useRef(false);
+  const isMounted = React.useRef(false);
+
   const { categoryId, sort, currentPage } = useSelector(
     (state) => state.filter,
   );
-  const sortType = sort.sortProperty;
-
-  const dispatch = useDispatch();
 
   const { searchValue } = React.useContext(SearchContext);
-
   const [pizzas, setPizzas] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const onChangeCategory = (id) => {
+  const onChangeCategory = React.useCallback((id) => {
     dispatch(setCategoryId(id));
-  };
+  }, []);
 
   const onChangePage = (number) => {
     dispatch(setcurrentPage(number));
   };
 
-  React.useEffect(() => {
+  const fetchPizzas = () => {
     setIsLoading(true);
 
-    const sortBy = sortType.replace('-', '');
-    const order = sortType.includes('-') ? 'asc' : 'desc';
+    const sortBy = sort.sortProperty.replace('-', '');
+    const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
@@ -48,9 +55,45 @@ export const Home = () => {
         setPizzas(res.data);
         setIsLoading(false);
       });
+  };
 
+  // если был первый рендер, то проверяем параметры и сохраняем в редаксе
+  React.useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = list.find((obj) => obj.sortProperty === params.sortProperty);
+
+      dispatch(
+        setFilters({
+          ...params,
+          sort,
+        }),
+      );
+      isSearch.current = true;
+    }
+  }, []);
+  // если был первый рендер, то запрашиваем пиццы
+  React.useEffect(() => {
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, currentPage]);
+
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
+    isSearch.current = false;
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
+
+  // если изменились параметры и был первый рендер
+  React.useEffect(() => {
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sortProperty: sort.sortProperty,
+        categoryId,
+        currentPage,
+      });
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
+  }, [categoryId, sort.sortProperty, currentPage]);
 
   // поиск без бекенда
   // const piz = pizzas
@@ -89,7 +132,7 @@ export const Home = () => {
               />
             ))}
       </div>
-      {/* </div> */}
+
       <Pagination value={currentPage} onChangePage={onChangePage} />
     </>
   );
