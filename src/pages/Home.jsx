@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import shortId from 'shortid';
 
-import { setCategoryId } from '../redux/slices/filterSlice';
+import { setCategoryId, setcurrentPage } from '../redux/slices/filterSlice';
 import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
 import { Sort } from '../components/Sort';
@@ -12,18 +12,24 @@ import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaC
 import Pagination from '../components/pagination';
 
 export const Home = () => {
-  const { categoryId, sort } = useSelector((state) => state.filter);
+  const { categoryId, sort, currentPage } = useSelector(
+    (state) => state.filter,
+  );
   const sortType = sort.sortProperty;
+
   const dispatch = useDispatch();
 
   const { searchValue } = React.useContext(SearchContext);
 
   const [pizzas, setPizzas] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
 
   const onChangeCategory = (id) => {
     dispatch(setCategoryId(id));
+  };
+
+  const onChangePage = (number) => {
+    dispatch(setcurrentPage(number));
   };
 
   React.useEffect(() => {
@@ -38,8 +44,11 @@ export const Home = () => {
       .get(
         `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
       )
-      .then((res) => setPizzas(res.data));
-    setIsLoading(false);
+      .then((res) => {
+        setPizzas(res.data);
+        setIsLoading(false);
+      });
+
     window.scrollTo(0, 0);
   }, [categoryId, sortType, searchValue, currentPage]);
 
@@ -81,7 +90,7 @@ export const Home = () => {
             ))}
       </div>
       {/* </div> */}
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination value={currentPage} onChangePage={onChangePage} />
     </>
   );
 };
