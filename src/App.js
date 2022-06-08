@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import axios from 'axios';
 
 import { Header } from './components/header/Header';
 import { Cart } from './pages/Cart';

@@ -1,6 +1,6 @@
 import React from 'react';
 import qs from 'qs';
-import axios from 'axios';
+// import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import shortId from 'shortid';
@@ -10,6 +10,7 @@ import {
   setcurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzasSlice';
 import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
 import { list, Sort } from '../components/Sort';
@@ -26,10 +27,11 @@ export const Home = () => {
   const { categoryId, sort, currentPage } = useSelector(
     (state) => state.filter,
   );
+  const { items, status } = useSelector((state) => state.pizza);
 
   const { searchValue } = React.useContext(SearchContext);
-  const [pizzas, setPizzas] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  // const [pizzas, setPizzas] = React.useState([]);
+  // const [isLoading, setIsLoading] = React.useState(true);
 
   const onChangeCategory = React.useCallback((id) => {
     dispatch(setCategoryId(id));
@@ -39,22 +41,43 @@ export const Home = () => {
     dispatch(setcurrentPage(number));
   };
 
-  const fetchPizzas = () => {
-    setIsLoading(true);
+  const getPizzas = async () => {
+    // setIsLoading(true);
 
     const sortBy = sort.sortProperty.replace('-', '');
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios
-      .get(
-        `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      )
-      .then((res) => {
-        setPizzas(res.data);
-        setIsLoading(false);
-      });
+    dispatch(fetchPizzas({ sortBy, order, category, search, currentPage }));
+    window.scrollTo(0, 0);
+
+    // await axios
+    //   .get(
+    //     `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+    //   )
+    //   .then((res) => {
+    //     setPizzas(res.data);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     setIsLoading(false);
+    //   });
+
+    // try {
+    //   // const { data } = await axios.get(
+    //   //   `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+    //   // );
+    //   // dispatch(fetchPizzas({ sortBy, order, category, search, currentPage }));
+    //   // setPizzas(res.data);
+    // } catch (error) {
+    //   console.log(error);
+
+    //   alert(error);
+    // } finally {
+    //   // setIsLoading(false);
+    // }
   };
 
   // если был первый рендер, то проверяем параметры и сохраняем в редаксе
@@ -74,12 +97,11 @@ export const Home = () => {
   }, []);
   // если был первый рендер, то запрашиваем пиццы
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
 
-    if (!isSearch.current) {
-      fetchPizzas();
-    }
-    isSearch.current = false;
+    getPizzas();
+
+    // isSearch.current = false;
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   // если изменились параметры и был первый рендер
@@ -112,26 +134,32 @@ export const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, index) => (
-              <PlaceholderPizzaCart key={index} />
-            ))
-          : pizzas.map((obj) => (
-              <PizzaBlock
-                key={shortId.generate()}
-                {...obj}
-                // key={obj.id}
-                // imageUrl={obj.imageUrl}
-                // types={obj.types}
-                // category={obj.category}
-                // rating={obj.rating}
-                // name={obj.name}
-                // price={obj.price}
-                // sizes={obj.sizes}
-              />
-            ))}
-      </div>
+      {status === 'error' ? (
+        <div>
+          <h2>Произошла ошибка</h2>
+        </div>
+      ) : (
+        <div className="content__items">
+          {status === 'loading'
+            ? [...new Array(6)].map((_, index) => (
+                <PlaceholderPizzaCart key={index} />
+              ))
+            : items.map((obj) => (
+                <PizzaBlock
+                  key={shortId.generate()}
+                  {...obj}
+                  // key={obj.id}
+                  // imageUrl={obj.imageUrl}
+                  // types={obj.types}
+                  // category={obj.category}
+                  // rating={obj.rating}
+                  // name={obj.name}
+                  // price={obj.price}
+                  // sizes={obj.sizes}
+                />
+              ))}
+        </div>
+      )}
 
       <Pagination value={currentPage} onChangePage={onChangePage} />
     </>
