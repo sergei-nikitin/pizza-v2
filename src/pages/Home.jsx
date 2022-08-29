@@ -11,12 +11,14 @@ import {
   setFilters,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
-import { SearchContext } from '../App';
+// import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
 import { list, Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
+import { selectorFilter } from '../redux/slices/filterSlice';
+import { selectorPizza } from '../redux/slices/pizzasSlice';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -24,12 +26,11 @@ export const Home = () => {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector(
-    (state) => state.filter,
-  );
-  const { items, status } = useSelector((state) => state.pizza);
+  const { categoryId, sort, currentPage, searchValue } =
+    useSelector(selectorFilter);
+  const { items, status } = useSelector(selectorPizza);
 
-  const { searchValue } = React.useContext(SearchContext);
+  // const { searchValue } = React.useContext(SearchContext);
   // const [pizzas, setPizzas] = React.useState([]);
   // const [isLoading, setIsLoading] = React.useState(true);
 
