@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import shortId from 'shortid';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,6 +14,7 @@ export const PizzaBlock = ({
   name,
   price,
   sizes,
+  path,
 }) => {
   const dispatch = useDispatch();
   const cartItem = useSelector((state) =>
@@ -40,7 +42,9 @@ export const PizzaBlock = ({
   return (
     <div className="pizza-block-wrapper">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={imageUrl} alt="pizza" />
+        <Link to={path}>
+          <img className="pizza-block__image" src={imageUrl} alt="pizza" />
+        </Link>
 
         <h4 className="pizza-block__title">{name}</h4>
         <div className="pizza-block__selector">

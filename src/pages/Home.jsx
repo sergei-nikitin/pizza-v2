@@ -1,6 +1,5 @@
 import React from 'react';
 import qs from 'qs';
-// import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import shortId from 'shortid';
@@ -11,7 +10,6 @@ import {
   setFilters,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
-// import { SearchContext } from '../App';
 import { Categories } from '../components/categories/Categories';
 import { list, Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
@@ -149,6 +147,7 @@ export const Home = () => {
                 <PizzaBlock
                   key={shortId.generate()}
                   {...obj}
+                  path={`/pizza/${obj.id}`}
                   // key={obj.id}
                   // imageUrl={obj.imageUrl}
                   // types={obj.types}
