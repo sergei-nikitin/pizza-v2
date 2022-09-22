@@ -1,7 +1,11 @@
 import React from 'react';
 import ContentLoader from 'react-content-loader';
 
-export const PlaceholderPizzaCart = ({ className }) => {
+type PlaceholderPizzaCartProps = {
+  className: string;
+}
+
+export const PlaceholderPizzaCart: React.FC<PlaceholderPizzaCartProps> = ({ className }) => {
   return (
     <ContentLoader
       className="pizza-block"

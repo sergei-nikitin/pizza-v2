@@ -1,10 +1,16 @@
-import React from 'react';
-import shortId from 'shortid';
+import React, {useRef, useEffect} from 'react';
+// import shortId from 'shortid';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { selectorFilter } from '../redux/slices/filterSlice';
 import { setSort } from '../redux/slices/filterSlice';
 
-export const list = [
+type SortItem = {
+  title: string;
+  sortProperty: string;
+}
+
+export const list: SortItem[] = [
   { title: 'популярности (DESC)', sortProperty: 'rating' },
   { title: 'популярности (ASC)', sortProperty: '-rating' },
   { title: 'цене (DESC)', sortProperty: 'price' },
@@ -13,20 +19,21 @@ export const list = [
   { title: 'алфавиту (ASC)', sortProperty: '-name' },
 ];
 
-export const Sort = () => {
+export const Sort: React.FC = () => {
   const dispatch = useDispatch();
-  const sort = useSelector((state) => state.filter.sort);
-  const sortRef = React.useRef();
+  // const sort = useSelector((state) => state.filter.sort);
+  const sort = useSelector(selectorFilter);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const onItemClick = (i) => {
+  const onItemClick = (i: SortItem) => {
     dispatch(setSort(i));
     setIsOpen(!isOpen);
   };
 
-  React.useEffect(() => {
-    const handleClickOutside = (event) => {
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
       if (!event.path.includes(sortRef.current)) {
         setIsOpen(false);
       }
@@ -61,7 +68,7 @@ export const Sort = () => {
           <ul>
             {list.map((obj) => (
               <li
-                key={shortId.generate()}
+                key={obj.title}
                 onClick={() => onItemClick(obj)}
                 className={
                   sort.sortProperty === obj.sortProperty ? 'active' : ''

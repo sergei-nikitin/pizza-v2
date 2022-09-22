@@ -18,7 +18,7 @@ import Pagination from '../components/pagination';
 import { selectorFilter } from '../redux/slices/filterSlice';
 import { selectorPizza } from '../redux/slices/pizzasSlice';
 
-export const Home = () => {
+export const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isSearch = React.useRef(false);
@@ -32,11 +32,11 @@ export const Home = () => {
   // const [pizzas, setPizzas] = React.useState([]);
   // const [isLoading, setIsLoading] = React.useState(true);
 
-  const onChangeCategory = React.useCallback((id) => {
+  const onChangeCategory = React.useCallback((id: number) => {
     dispatch(setCategoryId(id));
   }, []);
 
-  const onChangePage = (number) => {
+  const onChangePage = (number: number) => {
     dispatch(setcurrentPage(number));
   };
 
@@ -48,7 +48,9 @@ export const Home = () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    dispatch(fetchPizzas({ sortBy, order, category, search, currentPage }));
+    dispatch(
+      //@ts-ignore
+      fetchPizzas({ sortBy, order, category, search, currentPage }));
     window.scrollTo(0, 0);
 
     // await axios
@@ -141,9 +143,9 @@ export const Home = () => {
         <div className="content__items">
           {status === 'loading'
             ? [...new Array(6)].map((_, index) => (
-                <PlaceholderPizzaCart key={index} />
+                <PlaceholderPizzaCart className="pizza-block" key={index} />
               ))
-            : items.map((obj) => (
+            : items.map((obj: any) => (
                 <PizzaBlock
                   key={shortId.generate()}
                   {...obj}

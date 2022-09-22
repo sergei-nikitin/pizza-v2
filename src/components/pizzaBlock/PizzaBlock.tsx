@@ -1,11 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
-import shortId from 'shortid';
+// import shortId from 'shortid';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addItem } from '../../redux/slices/cartSlice';
+import {selectCartItemById} from "../../redux/slices/cartSlice"
 
-export const PizzaBlock = ({
+type PizzaBlockProps = {
+  id: string;
+  imageUrl: string;
+  types: number[];
+  category: number;
+  rating: number;
+  name: string;
+  price: number;
+  sizes: number[];
+  path: any;
+}
+
+export const PizzaBlock: React.FC<PizzaBlockProps> = ({
   id,
   imageUrl,
   types,
@@ -17,12 +30,13 @@ export const PizzaBlock = ({
   path,
 }) => {
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) =>
-    state.cart.items.find((obj) => obj.id === id),
-  );
+  const cartItem = useSelector(selectCartItemById(id));
+  // const cartItem = useSelector((state) =>
+  //   state.cart.items.find((obj) => obj.id === id),
+  // );
 
-  const [activeType, setActiveType] = React.useState(0);
-  const [activeSize, setActiveSize] = React.useState(0);
+  const [activeType, setActiveType] = useState(0);
+  const [activeSize, setActiveSize] = useState(0);
   const typesNames = ['тонкое', 'традиционное'];
 
   const addedCount = cartItem ? cartItem.count : 0;
@@ -49,9 +63,9 @@ export const PizzaBlock = ({
         <h4 className="pizza-block__title">{name}</h4>
         <div className="pizza-block__selector">
           <ul>
-            {types.map((type) => (
+            {types.map((type, i) => (
               <li
-                key={shortId.generate()}
+                key={i}
                 onClick={() => setActiveType(type)}
                 className={activeType === type ? 'active ' : ''}>
                 {typesNames[type]}
@@ -61,7 +75,7 @@ export const PizzaBlock = ({
           <ul>
             {sizes.map((size, i) => (
               <li
-                key={shortId.generate()}
+                key={i}
                 onClick={() => setActiveSize(i)}
                 className={activeSize === i ? 'active ' : ''}>
                 {size} см
