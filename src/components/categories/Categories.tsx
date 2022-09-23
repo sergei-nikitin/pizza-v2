@@ -2,11 +2,10 @@ import React from 'react';
 
 type CategoriesProps = {
   value: number;
-  onClickCategory: any;
+  onClickCategory: (i: number) => void;
+  getCetegories: (categories: string[]) => void;
 }
 
-export const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory }) => {
-// export const Categories: React.FC = ({ value, onClickCategory }:CategoriesProps) => {
   const categories = [
     'Все',
     'Мясные',
@@ -15,6 +14,10 @@ export const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory }
     'Острые',
     'Закрытые',
   ];
+
+export const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory, getCetegories }) => {
+// export const Categories: React.FC = ({ value, onClickCategory }:CategoriesProps) => {
+getCetegories(categories)
 
   return (
     <div className="categories">

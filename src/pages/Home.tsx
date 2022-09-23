@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import qs from 'qs';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -82,7 +82,7 @@ export const Home: React.FC = () => {
   };
 
   // если был первый рендер, то проверяем параметры и сохраняем в редаксе
-  React.useEffect(() => {
+  useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
       const sort = list.find((obj) => obj.sortProperty === params.sortProperty);
@@ -97,7 +97,7 @@ export const Home: React.FC = () => {
     }
   }, []);
   // если был первый рендер, то запрашиваем пиццы
-  React.useEffect(() => {
+  useEffect(() => {
     // window.scrollTo(0, 0);
 
     getPizzas();
@@ -106,7 +106,7 @@ export const Home: React.FC = () => {
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   // если изменились параметры и был первый рендер
-  React.useEffect(() => {
+  useEffect(() => {
     if (isMounted.current) {
       const queryString = qs.stringify({
         sortProperty: sort.sortProperty,
@@ -131,7 +131,9 @@ export const Home: React.FC = () => {
   return (
     <>
       <div className="content__top">
-        <Categories value={categoryId} onClickCategory={onChangeCategory} />
+        <Categories value={categoryId} onClickCategory={onChangeCategory}
+          getCetegories={() => { }}
+        />
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
