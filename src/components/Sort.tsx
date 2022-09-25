@@ -2,12 +2,12 @@ import React, {useRef, useEffect} from 'react';
 // import shortId from 'shortid';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectorFilter } from '../redux/slices/filterSlice';
+import { selectorFilter, Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
 import { setSort } from '../redux/slices/filterSlice';
 
 type SortItem = {
   title: string;
-  sortProperty: string;
+  sortProperty: SortPropertyEnum;
 }
 
 type PopupClick = MouseEvent & {
@@ -15,15 +15,15 @@ type PopupClick = MouseEvent & {
 }
 
 export const list: SortItem[] = [
-  { title: 'популярности (DESC)', sortProperty: 'rating' },
-  { title: 'популярности (ASC)', sortProperty: '-rating' },
-  { title: 'цене (DESC)', sortProperty: 'price' },
-  { title: 'цене (ASC)', sortProperty: '-price' },
-  { title: 'алфавиту (DESC)', sortProperty: 'name' },
-  { title: 'алфавиту (ASC)', sortProperty: '-name' },
+  { title: 'популярности (DESC)', sortProperty: SortPropertyEnum.RATING_DESC },
+  { title: 'популярности (ASC)', sortProperty: SortPropertyEnum.RATING_ASC },
+  { title: 'цене (DESC)', sortProperty: SortPropertyEnum.PRICE_DESC },
+  { title: 'цене (ASC)', sortProperty: SortPropertyEnum.PRICE_ASC },
+  { title: 'алфавиту (DESC)', sortProperty: SortPropertyEnum.NAME_DESC },
+  { title: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.NAME_ASC },
 ];
 
-export const Sort: React.FC = () => {
+export const SortPopup: React.FC = () => {
   const dispatch = useDispatch();
   // const sort = useSelector((state) => state.filter.sort);
   const sort = useSelector(selectorFilter);
@@ -67,7 +67,7 @@ export const Sort: React.FC = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sort.title}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{sort.sort.title}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -77,7 +77,7 @@ export const Sort: React.FC = () => {
                 key={obj.title}
                 onClick={() => onItemClick(obj)}
                 className={
-                  sort.sortProperty === obj.sortProperty ? 'active' : ''
+                  sort.sort.sortProperty === obj.sortProperty ? 'active' : ''
                 }>
                 {obj.title}
               </li>

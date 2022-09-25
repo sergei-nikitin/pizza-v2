@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import qs from 'qs';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -9,20 +9,21 @@ import {
   setcurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
-import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { fetchPizzas, SearchPizzaParams } from '../redux/slices/pizzasSlice';
 import { Categories } from '../components/categories/Categories';
-import { list, Sort } from '../components/Sort';
+import { list, SortPopup } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
 import { selectorFilter } from '../redux/slices/filterSlice';
 import { selectorPizza } from '../redux/slices/pizzasSlice';
+import { useAppDispatch } from '../redux/store';
 
-export const Home: React.FC = () => {
+export const Home: React.FC = () => { 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isSearch = React.useRef(false);
-  const isMounted = React.useRef(false);
+  const dispatch = useAppDispatch();
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
 
   const { categoryId, sort, currentPage, searchValue } =
     useSelector(selectorFilter);
@@ -42,55 +43,29 @@ export const Home: React.FC = () => {
 
   const getPizzas = async () => {
     // setIsLoading(true);
-
     const sortBy = sort.sortProperty.replace('-', '');
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(
-      //@ts-ignore
-      fetchPizzas({ sortBy, order, category, search, currentPage }));
+      fetchPizzas({ sortBy, order, category, search, currentPage: String(currentPage) }));
     window.scrollTo(0, 0);
-
-    // await axios
-    //   .get(
-    //     `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    //   )
-    //   .then((res) => {
-    //     setPizzas(res.data);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setIsLoading(false);
-    //   });
-
-    // try {
-    //   // const { data } = await axios.get(
-    //   //   `https://62966f97810c00c1cb75cbe3.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    //   // );
-    //   // dispatch(fetchPizzas({ sortBy, order, category, search, currentPage }));
-    //   // setPizzas(res.data);
-    // } catch (error) {
-    //   console.log(error);
-
-    //   alert(error);
-    // } finally {
-    //   // setIsLoading(false);
-    // }
   };
 
   // если был первый рендер, то проверяем параметры и сохраняем в редаксе
   useEffect(() => {
     if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-      const sort = list.find((obj) => obj.sortProperty === params.sortProperty);
+      const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
+      const sort = list.find((obj) => obj.sortProperty === params.sortBy);
+
 
       dispatch(
         setFilters({
-          ...params,
-          sort,
+          searchValue: params.search,
+          categoryId: Number(params.category),
+          currentPage: Number(params.currentPage),
+          sort: sort || list[0],
         }),
       );
       isSearch.current = true;
@@ -134,7 +109,7 @@ export const Home: React.FC = () => {
         <Categories value={categoryId} onClickCategory={onChangeCategory}
           getCetegories={() => { }}
         />
-        <Sort />
+        <SortPopup />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
