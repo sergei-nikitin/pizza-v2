@@ -103,13 +103,15 @@ export const Home: React.FC = () => {
   //   })
   //   .map((obj) => <PizzaBlock key={shortId.generate()} {...obj} />);
 
+
+  
   return (
     <>
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onChangeCategory}
           getCetegories={() => { }}
         />
-        <SortPopup />
+        <SortPopup value={sort} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (

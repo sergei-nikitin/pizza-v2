@@ -1,8 +1,8 @@
 import React, {useRef, useEffect} from 'react';
 // import shortId from 'shortid';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { selectorFilter, Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
+import { Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
 import { setSort } from '../redux/slices/filterSlice';
 
 type SortItem = {
@@ -14,6 +14,10 @@ type PopupClick = MouseEvent & {
   path: Node[]
 }
 
+type SortPopupProps = {
+  value: Sort;
+}
+
 export const list: SortItem[] = [
   { title: 'популярности (DESC)', sortProperty: SortPropertyEnum.RATING_DESC },
   { title: 'популярности (ASC)', sortProperty: SortPropertyEnum.RATING_ASC },
@@ -23,10 +27,10 @@ export const list: SortItem[] = [
   { title: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.NAME_ASC },
 ];
 
-export const SortPopup: React.FC = () => {
+export const SortPopup: React.FC<SortPopupProps> = React.memo(
+  ({value}) => {
   const dispatch = useDispatch();
-  // const sort = useSelector((state) => state.filter.sort);
-  const sort = useSelector(selectorFilter);
+  // const sort = useSelector(selectorFilter);
   const sortRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -67,7 +71,7 @@ export const SortPopup: React.FC = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sort.sort.title}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{value.title}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -77,7 +81,7 @@ export const SortPopup: React.FC = () => {
                 key={obj.title}
                 onClick={() => onItemClick(obj)}
                 className={
-                  sort.sort.sortProperty === obj.sortProperty ? 'active' : ''
+                  value.sortProperty === obj.sortProperty ? 'active' : ''
                 }>
                 {obj.title}
               </li>
@@ -87,4 +91,5 @@ export const SortPopup: React.FC = () => {
       )}
     </div>
   );
-};
+}
+);

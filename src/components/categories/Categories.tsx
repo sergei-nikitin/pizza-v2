@@ -1,4 +1,5 @@
 import React from 'react';
+// import  useWhyDidYouUpdate  from 'ahooks/lib/useWhyDidYouUpdate';
 
 type CategoriesProps = {
   value: number;
@@ -15,10 +16,11 @@ type CategoriesProps = {
     'Закрытые',
   ];
 
-export const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory, getCetegories }) => {
+export const Categories: React.FC<CategoriesProps> = React.memo(
+  ({ value, onClickCategory, getCetegories }) => {
 // export const Categories: React.FC = ({ value, onClickCategory }:CategoriesProps) => {
 getCetegories(categories)
-
+// useWhyDidYouUpdate('Categories', { value, onClickCategory })
   return (
     <div className="categories">
       <ul>
@@ -33,4 +35,5 @@ getCetegories(categories)
       </ul>
     </div>
   );
-};
+}
+)
