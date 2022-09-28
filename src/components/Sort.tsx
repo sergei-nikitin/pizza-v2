@@ -2,8 +2,8 @@ import React, {useRef, useEffect} from 'react';
 // import shortId from 'shortid';
 import { useDispatch } from 'react-redux';
 
-import { Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
-import { setSort } from '../redux/slices/filterSlice';
+import { Sort, SortPropertyEnum } from '../redux/filter/types';
+import { setSort } from '../redux/filter/slice';
 
 type SortItem = {
   title: string;

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import qs from 'qs';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import shortId from 'shortid';
 
@@ -8,16 +8,17 @@ import {
   setCategoryId,
   setcurrentPage,
   setFilters,
-} from '../redux/slices/filterSlice';
-import { fetchPizzas, SearchPizzaParams } from '../redux/slices/pizzasSlice';
+} from '../redux/filter/slice';
+import { SearchPizzaParams } from '../redux/pizza/types';
 import { Categories } from '../components/categories/Categories';
 import { list, SortPopup } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
-import { selectorFilter } from '../redux/slices/filterSlice';
-import { selectorPizza } from '../redux/slices/pizzasSlice';
+import { selectorFilter } from '../redux/filter/selectors';
+import { selectorPizza } from '../redux/pizza/selectors';
 import { useAppDispatch } from '../redux/store';
+import { fetchPizzas } from '../redux/pizza/asyncActions';
 
 export const Home: React.FC = () => { 
   const navigate = useNavigate();

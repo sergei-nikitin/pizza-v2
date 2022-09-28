@@ -2,8 +2,8 @@ import React, {useCallback, useState, useRef} from 'react';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setSearchValue } from '../../redux/slices/filterSlice';
-import { selectorFilter } from '../../redux/slices/filterSlice';
+import { setSearchValue } from '../../redux/filter/slice';
+import { selectorFilter } from '../../redux/filter/selectors';
 
 // import { SearchContext } from '../../App';
 import s from './Search.module.scss';
