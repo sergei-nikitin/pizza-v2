@@ -10,15 +10,20 @@ import {
   setFilters,
 } from '../redux/filter/slice';
 import { SearchPizzaParams } from '../redux/pizza/types';
+import { selectorFilter } from '../redux/filter/selectors';
+import { selectorPizza } from '../redux/pizza/selectors';
+import { useAppDispatch } from '../redux/store';
+import { fetchPizzas } from '../redux/pizza/asyncActions';
+
 import { Categories } from '../components/categories/Categories';
 import { list, SortPopup } from '../components/Sort';
 import { PizzaBlock } from '../components/pizzaBlock/PizzaBlock';
 import { PlaceholderPizzaCart } from '../components/pizzaBlock/PlaceholderPizzaCart';
 import Pagination from '../components/pagination';
-import { selectorFilter } from '../redux/filter/selectors';
-import { selectorPizza } from '../redux/pizza/selectors';
-import { useAppDispatch } from '../redux/store';
-import { fetchPizzas } from '../redux/pizza/asyncActions';
+
+
+
+
 
 export const Home: React.FC = () => { 
   const navigate = useNavigate();
@@ -77,7 +82,6 @@ export const Home: React.FC = () => {
     // window.scrollTo(0, 0);
 
     getPizzas();
-
     // isSearch.current = false;
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
